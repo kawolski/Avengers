@@ -21,22 +21,39 @@ steps:
   displayName: 'npm install and build'
 
 
-- task: CopyFiles@2
-  inputs:
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copying Files'
-# - task: ArchiveFiles@2
+# - task: CopyFiles@2
 #   inputs:
-#     rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
-#     includeRootFolder: true
-#     archiveType: 'zip'
-#     archiveFile: '$(Build.ArtifactStagingDirectory)/ZIP/$(Build.BuildId).zip'
-#     replaceExistingArchive: true
-#   displayName: 'Archieving Files'
-- task: PublishBuildArtifacts@1
+#     Contents: '**'
+#     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+#   displayName: 'Copying Files'
+
+- task: ArchiveFiles@2
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: true
+    archiveType: 'zip'
+    # archiveFile: '$(Build.ArtifactStagingDirectory)/ZIP/$(Build.BuildId).zip'
+    # archiveFile: '$(Build.BuildId).zip'
+    replaceExistingArchive: true
+  displayName: 'Archieving Files'
+
+- task: CopyFiles@2
+  displayName: 'Copying File to: $(TargetFolder)'
+  inputs:
+    SourceFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: '$(Build.BuildId).zip'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\\ArtifactsToBePublished'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: SampleApp'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)\\ArtifactsToBePublished'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-  displayName: 'Publishing Files'
+
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#     ArtifactName: 'drop'
+#     publishLocation: 'Container'
+#   displayName: 'Publishing Files'
